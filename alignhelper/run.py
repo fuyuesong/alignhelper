@@ -46,4 +46,4 @@ def resample_data(inpath, outpath):
 if __name__ == "__main__":
     inpath = 'data/train.txt'
     outpath = 'data/validation.txt'
-    # resample_data(inpath, outpath)
+    resample_data(inpath, outpath)

@@ -2,7 +2,7 @@
 # author: kuangdd
 # date: 2020/10/13
 """
-run
+baidu_asr
 """
 from pathlib import Path
 import logging
