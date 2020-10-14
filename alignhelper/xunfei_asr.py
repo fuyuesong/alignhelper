@@ -51,8 +51,6 @@ from wsgiref.handlers import format_date_time
 from datetime import datetime
 from time import mktime
 import _thread as thread
-from pathlib import Path
-from tqdm import tqdm
 
 STATUS_FIRST_FRAME = 0  # 第一帧的标识
 STATUS_CONTINUE_FRAME = 1  # 中间帧标识
@@ -226,16 +224,16 @@ def request_one(fpath, ws_param=None, outfile=None):
 
 if __name__ == "__main__":
     # 测试时候在此处正确填写相关信息即可运行
-    import my_secret
+    from alignhelper import my_secret
 
     appid = my_secret.xunfei_appid
     apikey = my_secret.xunfei_apikey
     apisecret = my_secret.xunfei_apisecret
-    open_file = open('data/hello.txt', 'at', encoding='utf8')
+    open_file = open('../data/hello.txt', 'at', encoding='utf8')
 
     set_value(appid=appid, apikey=apikey, apisecret=apisecret, outfile=open_file)
 
-    filename = r"data\王凯\wangkai\wangkai_0011.wav"
+    filename = r"../data/hello.wav"
     request_one(filename)
 
     open_file.close()

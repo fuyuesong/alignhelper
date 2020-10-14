@@ -32,7 +32,7 @@ def get_token(api_key, secret_key):
     return token
 
 
-def recognize(sig, sr, token):
+def recognize(sig, kwargs=None):
     """
     {'corpus_no': '6883073753351389860',
     'err_msg': 'success.',
@@ -40,26 +40,27 @@ def recognize(sig, sr, token):
     'result': ['大家晚上好，我是赵丽颖。'],
     'sn': '181922733721602590492'}
     :param sig:
-    :param sr:
-    :param token:
+    :param kwargs:
     :return:
     """
+    if kwargs is None:
+        kwargs = {}
     url = "http://vop.baidu.com/server_api"
     speech_length = len(sig)
     speech = base64.b64encode(sig).decode("utf-8")
     mac_address = uuid.UUID(int=uuid.getnode()).hex[-12:]
-    rate = sr
     data = {
         "format": "wav",
         "lan": "zh",
-        "token": token,
+        "token": _access_token,
         "len": speech_length,
-        "rate": rate,
+        "rate": 16000,
         "speech": speech,
         "cuid": mac_address,
         "channel": 1,
         "dev_pid": 1536,  # 1537则超额
     }
+    data.update(kwargs)
     data_length = len(json.dumps(data).encode("utf-8"))
     headers = {"Content-Type": "application/json",
                "Content-Length": str(data_length)}
@@ -67,24 +68,26 @@ def recognize(sig, sr, token):
     return r.json()
 
 
-def request_one(fpath, sr=16000, token=''):
+def request_one(fpath, kwargs=None):
+    if kwargs is None:
+        kwargs = {}
     global _access_token
-    if token:
-        _access_token = token
+    if 'token' in kwargs:
+        _access_token = kwargs.get('token')
     try:
         signal = open(fpath, "rb").read()
-        out = recognize(signal, sr, _access_token)
+        out = recognize(signal, kwargs)
         return out
     except Exception as e:
         print(f'Failed! {fpath}')
 
 
 if __name__ == "__main__":
-    import my_secret
+    from alignhelper import my_secret
 
     api_key = my_secret.baidu_api_key
     secret_key = my_secret.baidu_secret_key
-    filename = r"data\王凯\wangkai\wangkai_0011.wav"
+    filename = r"../data/hello.wav"
     set_value(api_key=api_key, secret_key=secret_key)
     out = request_one(filename)
     print(out)
